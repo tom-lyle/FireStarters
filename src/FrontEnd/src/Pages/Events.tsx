@@ -1,8 +1,10 @@
+import EventCalendar from '../Components/EventCalendar';
+
 export default function Events() {
     return (
         <>
             <h1>Events</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque quibusdam accusantium autem, eveniet recusandae quaerat obcaecati voluptate, ad doloribus ipsum blanditiis molestiae quisquam quidem iste sunt officia nihil. At, ab.</p>
+            <EventCalendar />
         </>
     );
 }

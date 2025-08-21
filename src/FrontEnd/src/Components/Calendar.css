@@ -1,0 +1,30 @@
+.calendar {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.calendar th,
+.calendar td {
+  border: 1px solid #dee2e6;
+  height: 80px;
+  position: relative;
+}
+
+.day-number {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 0.9rem;
+}
+
+.event-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #0d6efd;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
