@@ -1,5 +1,6 @@
-import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'react-calendar/dist/Calendar.css';
+import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NoPage from './Pages/NoPage';
 import Layout from './Components/Layout';

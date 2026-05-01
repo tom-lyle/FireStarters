@@ -16,8 +16,138 @@
     color: #741102;
 }
 
+h1 {
+    font-size: 80pt;
+    text-align: center;
+}
+
+h1>span {
+    font-size: 40pt;
+}
+
 nav>.container {
     margin-left: 0;
     margin-right: 0;
     padding-left: 2%;
 }
+
+#calendar>.react-calendar {
+    margin: auto;
+    width: 75%;
+    background: #f2e6ce;
+    border: 3px solid #741102;
+    height: 500px;
+}
+
+.react-calendar__viewContainer {
+    height: 90%;
+}
+
+.react-calendar__month-view {
+    height: 100%;
+}
+
+.react-calendar__month-view > div {
+    height: 100%;
+}
+
+.react-calendar__month-view > div > div {
+    height: 100%;
+}
+
+.react-calendar__month-view__days {
+    height: 95%;
+}
+
+.react-calendar__month-view__days__day {
+    border: 1px solid black;
+    text-align: left;
+    padding-top: 0px;
+    padding-bottom: 1%;
+    height: auto;
+    line-height: 0%;
+}
+
+/* Mon - Fri */
+.react-calendar__month-view__weekdays__weekday {
+    color: rgb(206, 67, 90);
+}
+
+/* Sat - Sun */
+.react-calendar__month-view__weekdays__weekday--weekend {
+    color: #000000;
+}
+
+/* Weekdays */
+.react-calendar__month-view__days__day>abbr {
+    color: #741102;
+    line-height: 0%;
+}
+
+/* Weekends */
+.react-calendar__month-view__days__day--weekend>abbr {
+    color: black;
+}
+
+
+.react-calendar__month-view__days__day {
+    background-color: #f2e6ce;
+    transition: 0.5s;
+
+}
+
+.react-calendar__month-view__days__day:hover {
+    border: 1px solid #741102;
+    background-color: #f4c6be;
+    transition: 0.5s;
+}
+
+.react-calendar__navigation {
+    width: fit-content;
+    height: 10%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.react-calendar__navigation > button {
+    background-color: #f2e6cf;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+    background-color: #c9bfac;
+}
+
+.react-calendar__month-view__weekdays {
+    border-bottom: 1px solid black;
+    text-align: center;
+    height: 5%;
+}
+
+.react-calendar__navigation__label__labelText {
+    color: #000000;
+}
+
+.react-calendar__navigation__arrow {
+    color: #000000;
+}
+
+/* @media only screen and (max-width: 600px) {
+    #root {background-color: aqua;}
+    h1 {font-size: 40px}
+} */
+
+/* @media (prefers-color-scheme: dark) {
+
+    #root {
+        background-color: #2f0e10;
+    }
+
+    
+    #mainNavBar {
+        background-color: #481418;
+    }
+
+    #body {
+        color: #c8beab;
+    }
+} */
