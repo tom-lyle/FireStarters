@@ -42,20 +42,22 @@ export default function Navbar() {
                 </button>
             </div>
 
-            {open && (
-                <nav className="nav-links nav-links--mobile">
-                    {links.map(l => (
-                        <NavLink
-                            key={l.to}
-                            to={l.to}
-                            className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
-                            onClick={() => setOpen(false)}
-                        >
-                            {l.label}
-                        </NavLink>
-                    ))}
-                </nav>
-            )}
+            <nav
+                className={'nav-links nav-links--mobile' + (open ? ' is-open' : '')}
+                aria-hidden={!open}
+            >
+                {links.map(l => (
+                    <NavLink
+                        key={l.to}
+                        to={l.to}
+                        className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
+                        onClick={() => setOpen(false)}
+                        tabIndex={open ? 0 : -1}
+                    >
+                        {l.label}
+                    </NavLink>
+                ))}
+            </nav>
         </header>
     );
 }

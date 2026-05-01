@@ -6,6 +6,7 @@ import Layout from './Components/Layout';
 import Home from './Pages/Home';
 import About from './Pages/About';
 import Events from './Pages/Events';
+import EventDetail from './Pages/EventDetail';
 import Contact from './Pages/Contact';
 import Community from './Pages/Community';
 import NoPage from './Pages/NoPage';
@@ -18,6 +19,7 @@ function App() {
                     <Route index element={<Home />} />
                     <Route path="about" element={<About />} />
                     <Route path="events" element={<Events />} />
+                    <Route path="events/:id" element={<EventDetail />} />
                     <Route path="contact" element={<Contact />} />
                     <Route path="community" element={<Community />} />
                     <Route path="*" element={<NoPage />} />
