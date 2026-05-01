@@ -1,10 +1,11 @@
-export default function NoPage () {
+import { Link } from 'react-router-dom';
+
+export default function NoPage() {
     return (
-        <>
-            <h1>404 - Page Not Found</h1>
-            <p>
-                Sorry! We don't know what page you're looking for :/ please make sure the address you are using is correct!
-            </p>
-        </>
+        <section className="page page--404">
+            <h2>Page not found</h2>
+            <p>The page you're looking for doesn't exist.</p>
+            <Link to="/" className="btn btn-solid">Back to home</Link>
+        </section>
     );
-};
+}
