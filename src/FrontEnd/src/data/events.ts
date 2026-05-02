@@ -112,5 +112,5 @@ export function formatShortWhen(start: string, end?: string) {
         return `${startTime} – ${e.toLocaleTimeString('en-AU', timeOpts)}`;
     }
     const endShort: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' };
-    return `${startTime} → ${e.toLocaleDateString('en-AU', endShort)}`;
+    return `${s.toLocaleDateString('en-AU', endShort)} → ${e.toLocaleDateString('en-AU', endShort)}`;
 }
