@@ -27,6 +27,7 @@ export const events: EventItem[] = [
         location: '24 White Crescent, Campbell ACT 2612',
         description:
             'Round two of The Coffee Cup! North vs South — who will come out on top on the volleyball courts?',
+        image: '/images/coffee-volleyball.jpeg',
     },
     {
         id: 'alive-praise-night',
@@ -36,7 +37,6 @@ export const events: EventItem[] = [
         location: 'Collins Wing, St Benedicts RC Church',
         description:
             "Young adults gather for praise, worship and fellowship at Collins Wing, St Benedict's Narrabundah.",
-        image: '/images/alive-praise.jpeg',
     },
     {
         id: 'love-canberra',

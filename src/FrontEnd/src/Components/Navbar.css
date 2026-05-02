@@ -1,0 +1,142 @@
+/* ---------- Navbar ---------- */
+
+#mainNavBar {
+    width: 100%;
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+    border-bottom: 2px solid var(--color-ink);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+#mainNavBar .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+#mainNavBar .brand {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-bg);
+    letter-spacing: 0.02em;
+}
+
+#mainNavBar .brand:hover {
+    color: var(--color-accent-soft);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: var(--color-bg);
+    font-size: 1rem;
+    font-weight: 400;
+    padding: 0.25rem 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--color-bg);
+    border-bottom-color: var(--color-bg);
+}
+
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.nav-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-bg);
+}
+
+/* Mobile menu — always rendered, overlays content via absolute positioning + animation */
+
+.nav-links--mobile {
+    display: none;
+}
+
+@media (max-width: 720px) {
+    .nav-links--desktop {
+        display: none;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .nav-links--mobile {
+        display: flex;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        padding: 0.5rem 1.5rem 1rem;
+        background-color: var(--color-accent);
+        border-top: 1px solid rgba(242, 230, 206, 0.25);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transform: translateY(-12px);
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+        transition:
+            transform 250ms cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 200ms ease,
+            visibility 0s linear 250ms;
+    }
+
+    .nav-links--mobile.is-open {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+        visibility: visible;
+        transition:
+            transform 250ms cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 200ms ease,
+            visibility 0s;
+    }
+
+    .nav-links--mobile .nav-link {
+        width: 100%;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(242, 230, 206, 0.15);
+    }
+
+    .nav-links--mobile .nav-link:last-child {
+        border-bottom: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nav-links--mobile {
+        transition: opacity 100ms ease, visibility 0s linear 100ms;
+        transform: none;
+    }
+
+    .nav-links--mobile.is-open {
+        transform: none;
+        transition: opacity 100ms ease, visibility 0s;
+    }
+}

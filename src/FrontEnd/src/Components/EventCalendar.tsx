@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import Calendar from 'react-calendar';
+import './EventCalendar.css';
 
 type GCalDate = { dateTime?: string; date?: string; timeZone?: string };
 

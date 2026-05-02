@@ -1,0 +1,21 @@
+/* ---------- About ---------- */
+
+.page--about .about-contact {
+    margin: 3rem auto 0;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-muted);
+    max-width: 70ch;
+    text-align: center;
+}
+
+.page--about .about-contact h3 {
+    font-size: 1.5rem;
+}
+
+.page--about .about-contact p {
+    text-align: center;
+}
+
+.page--about .about-contact .btn {
+    margin-top: 0.5rem;
+}

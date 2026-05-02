@@ -1,0 +1,53 @@
+/* ---------- Footer ---------- */
+
+#mainFooter {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+    border-top: 2px solid var(--color-ink);
+    padding: 2rem 1.5rem;
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.footer-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#mainFooter .btn-outline {
+    color: var(--color-bg);
+    border-color: var(--color-bg);
+}
+
+#mainFooter .btn-outline:hover {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+}
+
+.footer-brand {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.footer-social a {
+    color: var(--color-bg);
+    text-decoration: underline;
+}
+
+.footer-social a:hover {
+    color: var(--color-accent-soft);
+}
+
+.footer-social .sep {
+    margin: 0 0.5rem;
+    opacity: 0.6;
+}

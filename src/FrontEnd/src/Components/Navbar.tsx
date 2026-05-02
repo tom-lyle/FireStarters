@@ -1,21 +1,17 @@
 import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-
-const links = [
-    { to: '/community', label: 'Community' },
-    { to: '/about', label: 'About' },
-    { to: '/contact', label: 'Contact' },
-    { to: '/events', label: 'Events' },
-];
+import { navbarContent } from './Navbar.content';
+import './Navbar.css';
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);
+    const { brand, links } = navbarContent;
 
     return (
         <header id="mainNavBar">
             <div className="nav-inner">
-                <Link to="/" className="brand" onClick={() => setOpen(false)}>
-                    FireStarters CBR
+                <Link to={brand.to} className="brand" onClick={() => setOpen(false)}>
+                    {brand.label}
                 </Link>
 
                 <nav className="nav-links nav-links--desktop">
@@ -23,6 +19,7 @@ export default function Navbar() {
                         <NavLink
                             key={l.to}
                             to={l.to}
+                            end={l.to === '/'}
                             className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
                         >
                             {l.label}
@@ -50,6 +47,7 @@ export default function Navbar() {
                     <NavLink
                         key={l.to}
                         to={l.to}
+                        end={l.to === '/'}
                         className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
                         onClick={() => setOpen(false)}
                         tabIndex={open ? 0 : -1}

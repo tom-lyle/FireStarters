@@ -1,24 +1,26 @@
+import { contactContent } from './Contact.content';
+import './Contact.css';
+
 export default function Contact() {
+    const { heading, lead, items } = contactContent;
+
     return (
         <section className="page page--contact">
-            <h2>Contact Us</h2>
-            <p className="lead">We want to hear from you!</p>
+            <h2>{heading}</h2>
+            <p className="lead">{lead}</p>
 
             <ul className="contact-list">
-                <li>
-                    <span className="contact-label">Email</span>
-                    <a href="mailto:firestarterscbr@gmail.com">firestarterscbr@gmail.com</a>
-                </li>
-                <li>
-                    <span className="contact-label">Instagram</span>
-                    <a
-                        href="https://www.instagram.com/firestarterscbr"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        @FireStartersCBR
-                    </a>
-                </li>
+                {items.map(item => (
+                    <li key={item.label}>
+                        <span className="contact-label">{item.label}</span>
+                        <a
+                            href={item.href}
+                            {...(item.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+                        >
+                            {item.text}
+                        </a>
+                    </li>
+                ))}
             </ul>
         </section>
     );

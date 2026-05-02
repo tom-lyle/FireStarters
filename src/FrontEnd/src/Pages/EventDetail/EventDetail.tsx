@@ -1,24 +1,31 @@
 import { Link, useParams } from 'react-router-dom';
-import { getEvent, formatTimeRange } from '../data/events';
+import { getEvent, formatTimeRange } from '../../data/events';
+import { eventDetailContent } from './EventDetail.content';
+import './EventDetail.css';
 
 export default function EventDetail() {
     const { id } = useParams<{ id: string }>();
     const event = id ? getEvent(id) : undefined;
 
     if (!event) {
+        const { notFound } = eventDetailContent;
         return (
             <section className="page page--event-detail">
-                <h2>Event not found</h2>
-                <p>That event doesn't exist or has been removed.</p>
-                <Link to="/events" className="btn btn-solid">Back to events</Link>
+                <h2>{notFound.heading}</h2>
+                <p>{notFound.body}</p>
+                <Link to={notFound.cta.to} className="btn btn-solid">
+                    {notFound.cta.label}
+                </Link>
             </section>
         );
     }
 
+    const { backLabel, cta } = eventDetailContent;
+
     return (
         <section className="page page--event-detail">
             <div className="event-back-bar">
-                <Link to="/events" className="event-back">‹ Back to events</Link>
+                <Link to="/events" className="event-back">{backLabel}</Link>
             </div>
 
             <h2>{event.title}</h2>
@@ -37,7 +44,7 @@ export default function EventDetail() {
             <p className="event-detail-desc">{event.description}</p>
 
             <div className="event-detail-cta">
-                <Link to="/contact" className="btn btn-solid">Get in touch</Link>
+                <Link to={cta.to} className="btn btn-solid">{cta.label}</Link>
             </div>
         </section>
     );

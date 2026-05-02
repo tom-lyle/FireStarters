@@ -1,12 +1,16 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useParallax } from '../Components/useParallax';
-import { events, formatDateBadge, formatShortWhen } from '../data/events';
+import { useParallax } from '../../Components/useParallax';
+import { events, formatDateBadge, formatShortWhen } from '../../data/events';
+import { eventsContent } from './Events.content';
+import './Events.css';
 
 export default function Events() {
     const bannerRef = useRef<HTMLDivElement | null>(null);
     const bannerBgRef = useRef<HTMLDivElement | null>(null);
     useParallax(bannerRef, bannerBgRef);
+
+    const { banner, chevron } = eventsContent;
 
     return (
         <section className="page page--events">
@@ -14,10 +18,10 @@ export default function Events() {
                 <div
                     ref={bannerBgRef}
                     className="events-banner-bg"
-                    style={{ backgroundImage: 'url(/images/events-header.jpg)' }}
+                    style={{ backgroundImage: `url(${banner.backgroundImage})` }}
                 />
                 <div className="events-banner-overlay" />
-                <h2>Upcoming events</h2>
+                <h2>{banner.heading}</h2>
             </div>
 
             <ul className="event-preview-list">
@@ -36,7 +40,7 @@ export default function Events() {
                                         {formatShortWhen(ev.start, ev.end)}
                                     </p>
                                 </div>
-                                <span className="event-preview__chev" aria-hidden>›</span>
+                                <span className="event-preview__chev" aria-hidden>{chevron}</span>
                             </Link>
                         </li>
                     );

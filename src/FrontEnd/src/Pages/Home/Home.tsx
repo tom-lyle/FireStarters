@@ -1,12 +1,15 @@
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
-import EventCalendar from '../Components/EventCalendar';
-import { useParallax } from '../Components/useParallax';
+import EventCalendar from '../../Components/EventCalendar';
+import { useParallax } from '../../Components/useParallax';
+import { homeContent } from './Home.content';
+import './Home.css';
 
 export default function Home() {
     const heroRef = useRef<HTMLElement | null>(null);
     const bgRef = useRef<HTMLDivElement | null>(null);
     useParallax(heroRef, bgRef);
+
+    const { hero, calendar } = homeContent;
 
     return (
         <>
@@ -14,26 +17,18 @@ export default function Home() {
                 <div
                     ref={bgRef}
                     className="hero-bg"
-                    style={{ backgroundImage: 'url(/images/hero.jpg)' }}
+                    style={{ backgroundImage: `url(${hero.backgroundImage})` }}
                 />
                 <div className="hero-overlay" />
                 <div className="hero-content">
-                    <h1>FireStarters <span>CBR</span></h1>
-                    <p className="tagline">
-                        Your home page to connect with the Canberra Christian community
-                    </p>
-                    <div className="hero-cta">
-                        <Link to="/contact" className="btn btn-solid">Contact</Link>
-                        <Link to="/contact" className="btn btn-outline">Register Event</Link>
-                    </div>
+                    <h1>{hero.title} <span>{hero.titleSuffix}</span></h1>
+                    <p className="tagline">{hero.tagline}</p>
                 </div>
             </section>
 
             <section className="home-calendar">
-                <h2>What's on</h2>
-                <p className="lead">
-                    Browse upcoming gatherings across Canberra. Click any day for details.
-                </p>
+                <h2>{calendar.heading}</h2>
+                <p className="lead">{calendar.lead}</p>
                 <EventCalendar />
             </section>
         </>

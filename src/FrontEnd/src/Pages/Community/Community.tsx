@@ -1,24 +1,13 @@
-type Community = {
-    name: string;
-    description: string;
-    when: string;
-    instagram?: string;
-};
-
-const communities: Community[] = [
-    {
-        name: 'Quake',
-        description: 'Young Adults Prayer, Worship and Intercession',
-        when: '5pm Saturdays @ YWAM Canberra',
-        instagram: 'https://www.instagram.com/',
-    },
-];
+import { communityContent } from './Community.content';
+import './Community.css';
 
 export default function Community() {
+    const { heading, lead, communities } = communityContent;
+
     return (
         <section className="page page--community">
-            <h2>Communities</h2>
-            <p className="lead">Many communities gather regularly — get connected here!</p>
+            <h2>{heading}</h2>
+            <p className="lead">{lead}</p>
 
             <div className="community-grid">
                 {communities.map(c => (

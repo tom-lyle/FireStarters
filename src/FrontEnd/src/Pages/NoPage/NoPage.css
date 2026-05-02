@@ -1,0 +1,10 @@
+/* ---------- 404 ---------- */
+
+.page--404 {
+    text-align: center;
+    padding: 4rem 0;
+}
+
+.page--404 .btn {
+    margin-top: 1.5rem;
+}
