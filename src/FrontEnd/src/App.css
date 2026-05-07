@@ -51,6 +51,29 @@
     color: var(--color-bg);
 }
 
+/* ---------- Page transition ---------- */
+
+.page-fade {
+    animation: page-fade-in 280ms ease-out both;
+}
+
+@keyframes page-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-fade {
+        animation: none;
+    }
+}
+
 /* ---------- Generic page ---------- */
 
 .page {

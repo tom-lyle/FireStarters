@@ -13,7 +13,7 @@ export const communityContent = {
             name: 'Quake',
             description: 'Young Adults Prayer, Worship and Intercession',
             when: '5pm Saturdays @ YWAM Canberra',
-            instagram: 'https://www.instagram.com/',
+            instagram: 'https://www.instagram.com/quakecbr/',
         },
     ] satisfies Community[],
 };
