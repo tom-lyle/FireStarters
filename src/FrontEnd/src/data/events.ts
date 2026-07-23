@@ -36,6 +36,8 @@ export type GCalAttachment = {
 export type GCalEvent = {
     id: string;
     status?: string;
+    /** 'default' | 'public' | 'private' | 'confidential'. */
+    visibility?: string;
     summary?: string;
     description?: string;
     location?: string;
@@ -44,6 +46,15 @@ export type GCalEvent = {
     end: GCalDate;
     attachments?: GCalAttachment[];
 };
+
+/**
+ * True when an event should be shown publicly. Events marked "private" or
+ * "confidential" in Google Calendar come back with their details stripped when
+ * read via an API key, so we hide them entirely rather than show an empty slot.
+ */
+export function isPublicEvent(ev: GCalEvent): boolean {
+    return ev.visibility !== 'private' && ev.visibility !== 'confidential';
+}
 
 /**
  * Build a directly-embeddable image URL from the first image attachment on an

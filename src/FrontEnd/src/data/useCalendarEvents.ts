@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { normalizeEvent, type EventItem, type GCalEvent } from './events';
+import { isPublicEvent, normalizeEvent, type EventItem, type GCalEvent } from './events';
 
 const CALENDAR_ID = import.meta.env.VITE_GOOGLE_CALENDAR_ID as string | undefined;
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY as string | undefined;
@@ -72,7 +72,10 @@ export function useCalendarEvents(opts?: { timeMin?: Date; timeMax?: Date }): Li
                 return r.json();
             })
             .then((data: { items?: GCalEvent[] }) => {
-                const events = (data.items ?? []).filter(hasStart).map(normalizeEvent);
+                const events = (data.items ?? [])
+                    .filter(hasStart)
+                    .filter(isPublicEvent)
+                    .map(normalizeEvent);
                 setState({ events, loading: false, error: null });
             })
             .catch((e: unknown) => {
@@ -126,7 +129,10 @@ export function useCalendarEvent(id: string | undefined): SingleState {
                 return r.json() as Promise<GCalEvent>;
             })
             .then(data => {
-                const event = data && data.status !== 'cancelled' ? normalizeEvent(data) : null;
+                const event =
+                    data && data.status !== 'cancelled' && isPublicEvent(data)
+                        ? normalizeEvent(data)
+                        : null;
                 setState({ event, loading: false, error: null });
             })
             .catch((e: unknown) => {
