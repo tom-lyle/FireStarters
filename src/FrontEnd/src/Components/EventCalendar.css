@@ -168,10 +168,24 @@
     padding-bottom: 0;
 }
 
+.calendar-event__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+}
+
+.calendar-event__link:hover .calendar-event__title,
+.calendar-event__link:focus-visible .calendar-event__title {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
+
 .calendar-event__title {
     font-family: var(--font-display);
     font-weight: 700;
     margin-bottom: 0.25rem;
+    transition: color 0.15s ease;
 }
 
 .calendar-event__when {

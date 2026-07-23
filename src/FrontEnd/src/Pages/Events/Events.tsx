@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useParallax } from '../../Components/useParallax';
-import { events, formatDateBadge, formatShortWhen } from '../../data/events';
+import { formatDateBadge, formatShortWhen } from '../../data/events';
+import { useCalendarEvents } from '../../data/useCalendarEvents';
 import { eventsContent } from './Events.content';
 import './Events.css';
 
@@ -11,6 +12,7 @@ export default function Events() {
     useParallax(bannerRef, bannerBgRef);
 
     const { banner, chevron } = eventsContent;
+    const { events, loading, error } = useCalendarEvents();
 
     return (
         <section className="page page--events">
@@ -24,28 +26,36 @@ export default function Events() {
                 <h2>{banner.heading}</h2>
             </div>
 
-            <ul className="event-preview-list">
-                {events.map(ev => {
-                    const badge = formatDateBadge(ev.start);
-                    return (
-                        <li key={ev.id}>
-                            <Link to={`/events/${ev.id}`} className="event-preview">
-                                <div className="event-date" aria-hidden>
-                                    <span className="event-date__month">{badge.month}</span>
-                                    <span className="event-date__day">{badge.day}</span>
-                                </div>
-                                <div className="event-preview__body">
-                                    <h3>{ev.title}</h3>
-                                    <p className="event-preview__when">
-                                        {formatShortWhen(ev.start, ev.end)}
-                                    </p>
-                                </div>
-                                <span className="event-preview__chev" aria-hidden>{chevron}</span>
-                            </Link>
-                        </li>
-                    );
-                })}
-            </ul>
+            {loading && <p className="events-status">Loading events…</p>}
+            {error && <p className="events-status events-status--error">{error}</p>}
+            {!loading && !error && events.length === 0 && (
+                <p className="events-status">No upcoming events right now — check back soon.</p>
+            )}
+
+            {!loading && !error && events.length > 0 && (
+                <ul className="event-preview-list">
+                    {events.map(ev => {
+                        const badge = formatDateBadge(ev.start);
+                        return (
+                            <li key={ev.id}>
+                                <Link to={`/events/${ev.id}`} className="event-preview">
+                                    <div className="event-date" aria-hidden>
+                                        <span className="event-date__month">{badge.month}</span>
+                                        <span className="event-date__day">{badge.day}</span>
+                                    </div>
+                                    <div className="event-preview__body">
+                                        <h3>{ev.title}</h3>
+                                        <p className="event-preview__when">
+                                            {formatShortWhen(ev.start, ev.end)}
+                                        </p>
+                                    </div>
+                                    <span className="event-preview__chev" aria-hidden>{chevron}</span>
+                                </Link>
+                            </li>
+                        );
+                    })}
+                </ul>
+            )}
         </section>
     );
 }

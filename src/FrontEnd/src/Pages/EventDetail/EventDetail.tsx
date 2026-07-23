@@ -1,14 +1,37 @@
 import { Link, useParams } from 'react-router-dom';
-import { getEvent, formatTimeRange } from '../../data/events';
+import { formatTimeRange } from '../../data/events';
+import { useCalendarEvent } from '../../data/useCalendarEvents';
 import { eventDetailContent } from './EventDetail.content';
 import './EventDetail.css';
 
 export default function EventDetail() {
     const { id } = useParams<{ id: string }>();
-    const event = id ? getEvent(id) : undefined;
+    const { event, loading, error } = useCalendarEvent(id);
+    const { backLabel, cta, notFound } = eventDetailContent;
+
+    if (loading) {
+        return (
+            <section className="page page--event-detail">
+                <div className="event-back-bar">
+                    <Link to="/events" className="event-back">{backLabel}</Link>
+                </div>
+                <p className="events-status">Loading event…</p>
+            </section>
+        );
+    }
+
+    if (error) {
+        return (
+            <section className="page page--event-detail">
+                <div className="event-back-bar">
+                    <Link to="/events" className="event-back">{backLabel}</Link>
+                </div>
+                <p className="events-status events-status--error">{error}</p>
+            </section>
+        );
+    }
 
     if (!event) {
-        const { notFound } = eventDetailContent;
         return (
             <section className="page page--event-detail">
                 <h2>{notFound.heading}</h2>
@@ -19,8 +42,6 @@ export default function EventDetail() {
             </section>
         );
     }
-
-    const { backLabel, cta } = eventDetailContent;
 
     return (
         <section className="page page--event-detail">
@@ -38,12 +59,29 @@ export default function EventDetail() {
                     src={event.image}
                     alt={event.title}
                     className="event-detail-image"
+                    loading="lazy"
+                    onError={(e) => {
+                        // Hide gracefully if the Drive file isn't publicly viewable.
+                        e.currentTarget.style.display = 'none';
+                    }}
                 />
             )}
 
-            <p className="event-detail-desc">{event.description}</p>
+            {event.description && (
+                <p className="event-detail-desc">{event.description}</p>
+            )}
 
             <div className="event-detail-cta">
+                {event.htmlLink && (
+                    <a
+                        href={event.htmlLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn btn-outline"
+                    >
+                        Add to your calendar
+                    </a>
+                )}
                 <Link to={cta.to} className="btn btn-solid">{cta.label}</Link>
             </div>
         </section>

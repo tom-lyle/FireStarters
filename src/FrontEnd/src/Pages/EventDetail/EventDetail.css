@@ -69,6 +69,10 @@
 
 .event-detail-cta {
     margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
 }
 
 /* Generic .event block (used by legacy event lists) */

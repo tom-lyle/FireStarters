@@ -1,116 +1,175 @@
+// Event model + formatting helpers, shared across the calendar widget,
+// the Events list page and the event detail page. Events are sourced live
+// from Google Calendar (see useCalendarEvents.ts); this module owns the
+// normalised shape and all the date/time display logic.
+
 export type EventItem = {
     id: string;
     title: string;
+    /** ISO date-time for timed events, or `YYYY-MM-DD` for all-day events. */
     start: string;
+    /**
+     * End of the event. For all-day events this is the *inclusive* last day
+     * (Google's API reports an exclusive end date; we normalise it here).
+     */
     end?: string;
+    allDay?: boolean;
     location?: string;
     description: string;
+    /** Link back to the event in Google Calendar. */
+    htmlLink?: string;
     image?: string;
 };
 
-export const events: EventItem[] = [
-    {
-        id: 'youth-alive-academy-pop-up',
-        title: 'Youth Alive Academy Pop Up',
-        start: '2025-11-18T19:00:00+11:00',
-        end: '2025-11-18T21:00:00+11:00',
-        location: 'Life Unlimited Church, Canberra',
-        description:
-            'A pop-up night for youth pastors, leaders and potential students to discover how the Youth Alive Academy can help raise and equip the next generation of leaders.',
-        image: '/images/youth-alive.jpeg',
-    },
-    {
-        id: 'coffee-cup-volleyball',
-        title: 'Coffee Cup — Volleyball',
-        start: '2025-11-02T13:30:00+11:00',
-        end: '2025-11-02T16:00:00+11:00',
-        location: '24 White Crescent, Campbell ACT 2612',
-        description:
-            'Round two of The Coffee Cup! North vs South — who will come out on top on the volleyball courts?',
-        image: '/images/coffee-volleyball.jpeg',
-    },
-    {
-        id: 'alive-praise-night',
-        title: 'ALIVE Praise Night',
-        start: '2025-10-30T19:00:00+11:00',
-        end: '2025-10-30T21:00:00+11:00',
-        location: 'Collins Wing, St Benedicts RC Church',
-        description:
-            "Young adults gather for praise, worship and fellowship at Collins Wing, St Benedict's Narrabundah.",
-    },
-    {
-        id: 'love-canberra',
-        title: 'Love Canberra',
-        start: '2025-10-26T19:00:00+11:00',
-        end: '2025-11-02T19:00:00+11:00',
-        description: 'A city-wide outreach week.',
-        image: '/images/love-canberra.png',
-    },
-    {
-        id: 'spring-fair-ywam',
-        title: 'Spring Fair — YWAM',
-        start: '2025-10-12T14:00:00+11:00',
-        end: '2025-10-12T17:00:00+11:00',
-        location: 'YWAM Canberra',
-        description:
-            'A Spring Fair with stalls, music, a free sausage sizzle and fun all afternoon.',
-        image: '/images/spring-fair.png',
-    },
-    {
-        id: 'coffee-cup-soccer',
-        title: 'Coffee Cup — Soccer',
-        start: '2025-10-12T13:30:00+11:00',
-        end: '2025-10-12T15:30:00+11:00',
-        location: '167 Bugden Avenue, Fadden ACT 2904',
-        description:
-            'A battle of North vs South — sports, games and social events!',
-        image: '/images/coffee-soccer.jpeg',
-    },
-];
+// --- Google Calendar API shapes -------------------------------------------
 
-export function getEvent(id: string): EventItem | undefined {
-    return events.find(e => e.id === id);
+export type GCalDate = { dateTime?: string; date?: string; timeZone?: string };
+
+export type GCalAttachment = {
+    fileId?: string;
+    fileUrl?: string;
+    title?: string;
+    mimeType?: string;
+    iconLink?: string;
+};
+
+export type GCalEvent = {
+    id: string;
+    status?: string;
+    summary?: string;
+    description?: string;
+    location?: string;
+    htmlLink?: string;
+    start: GCalDate;
+    end: GCalDate;
+    attachments?: GCalAttachment[];
+};
+
+/**
+ * Build a directly-embeddable image URL from the first image attachment on an
+ * event. Google Drive attachment URLs point at a viewer page, not the raw
+ * image, so we use the thumbnail endpoint (which serves an actual image and
+ * works for any Drive file shared as "Anyone with the link"). Events without
+ * an image attachment simply get no image.
+ */
+function attachmentImageUrl(attachments?: GCalAttachment[]): string | undefined {
+    const img = attachments?.find(a => a.fileId && a.mimeType?.startsWith('image/'));
+    if (!img?.fileId) return undefined;
+    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(img.fileId)}&sz=w1600`;
 }
+
+function toDateString(d: Date) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+}
+
+/** Convert a Google Calendar event into our normalised `EventItem`. */
+export function normalizeEvent(ev: GCalEvent): EventItem {
+    const allDay = !ev.start.dateTime;
+
+    let start: string;
+    let end: string | undefined;
+
+    if (allDay) {
+        start = ev.start.date ?? '';
+        if (ev.end?.date) {
+            // Google's all-day end date is exclusive; step back one day so it
+            // represents the inclusive final day the event runs.
+            const [y, m, d] = ev.end.date.split('-').map(Number);
+            end = toDateString(new Date(y, m - 1, d - 1));
+        }
+    } else {
+        start = ev.start.dateTime ?? '';
+        end = ev.end?.dateTime;
+    }
+
+    return {
+        id: ev.id,
+        title: ev.summary ?? '(untitled event)',
+        start,
+        end,
+        allDay,
+        location: ev.location,
+        description: ev.description ?? '',
+        htmlLink: ev.htmlLink,
+        image: attachmentImageUrl(ev.attachments),
+    };
+}
+
+// --- Date helpers ----------------------------------------------------------
+
+/** True when the string is an all-day `YYYY-MM-DD` date (no time component). */
+export function isAllDayString(s: string) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(s);
+}
+
+/**
+ * Parse an event date string into a `Date`. All-day strings are parsed in the
+ * local timezone (not UTC) so the day never drifts across a date boundary.
+ */
+export function toDate(s: string): Date {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+    if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    return new Date(s);
+}
+
+// --- Display formatting ----------------------------------------------------
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+const dateOpts: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+};
+const timeOpts: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
+const shortOpts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' };
+
 export function formatDateBadge(iso: string) {
-    const d = new Date(iso);
+    const d = toDate(iso);
     return { month: MONTHS[d.getMonth()], day: d.getDate() };
 }
 
+/** Full "when" line for the detail page. */
 export function formatTimeRange(start: string, end?: string) {
-    const dateOpts: Intl.DateTimeFormatOptions = {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    };
-    const timeOpts: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
-    const s = new Date(start);
+    const s = toDate(start);
     const dateStr = s.toLocaleDateString('en-AU', dateOpts);
+
+    if (isAllDayString(start)) {
+        if (!end || start === end) return `${dateStr} · All day`;
+        const e = toDate(end);
+        return `${dateStr} → ${e.toLocaleDateString('en-AU', dateOpts)}`;
+    }
+
     const startTime = s.toLocaleTimeString('en-AU', timeOpts);
     if (!end) return `${dateStr}, ${startTime}`;
-    const e = new Date(end);
-    const sameDay = s.toDateString() === e.toDateString();
-    if (sameDay) {
-        const endTime = e.toLocaleTimeString('en-AU', timeOpts);
-        return `${dateStr}, ${startTime} – ${endTime}`;
+
+    const e = toDate(end);
+    if (s.toDateString() === e.toDateString()) {
+        return `${dateStr}, ${startTime} – ${e.toLocaleTimeString('en-AU', timeOpts)}`;
     }
-    const endStr = e.toLocaleDateString('en-AU', dateOpts);
-    return `${dateStr}, ${startTime} → ${endStr}, ${e.toLocaleTimeString('en-AU', timeOpts)}`;
+    return `${dateStr}, ${startTime} → ${e.toLocaleDateString('en-AU', dateOpts)}, ${e.toLocaleTimeString('en-AU', timeOpts)}`;
 }
 
+/** Compact "when" line for list/preview cards. */
 export function formatShortWhen(start: string, end?: string) {
-    const timeOpts: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
-    const s = new Date(start);
+    const s = toDate(start);
+
+    if (isAllDayString(start)) {
+        if (!end || start === end) return 'All day';
+        const e = toDate(end);
+        return `${s.toLocaleDateString('en-AU', shortOpts)} → ${e.toLocaleDateString('en-AU', shortOpts)}`;
+    }
+
     const startTime = s.toLocaleTimeString('en-AU', timeOpts);
     if (!end) return startTime;
-    const e = new Date(end);
-    const sameDay = s.toDateString() === e.toDateString();
-    if (sameDay) {
+
+    const e = toDate(end);
+    if (s.toDateString() === e.toDateString()) {
         return `${startTime} – ${e.toLocaleTimeString('en-AU', timeOpts)}`;
     }
-    const endShort: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' };
-    return `${s.toLocaleDateString('en-AU', endShort)} → ${e.toLocaleDateString('en-AU', endShort)}`;
+    return `${s.toLocaleDateString('en-AU', shortOpts)} → ${e.toLocaleDateString('en-AU', shortOpts)}`;
 }

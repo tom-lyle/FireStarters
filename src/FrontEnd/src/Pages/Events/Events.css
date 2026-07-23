@@ -1,5 +1,16 @@
 /* ---------- Events ---------- */
 
+.events-status {
+    text-align: center;
+    color: var(--muted, #666);
+    padding: 2rem 1rem;
+    font-size: 1.05rem;
+}
+
+.events-status--error {
+    color: #b3261e;
+}
+
 .events-banner {
     position: relative;
     /* Full-bleed: escape #body's max-width and side padding */
